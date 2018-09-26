@@ -1,10 +1,7 @@
-package main
+package Model
 
 import (
-	"os"
-
 	"github.com/huacnlee/gobackup/config"
-	"gopkg.in/urfave/cli.v1"
 )
 
 const (
@@ -15,37 +12,6 @@ var (
 	modelName = ""
 	version   = "master"
 )
-
-func main() {
-	app := cli.NewApp()
-	app.Version = version
-	app.Name = "gobackup"
-	app.Usage = usage
-
-	app.Commands = []cli.Command{
-		cli.Command{
-			Name: "perform",
-			Flags: []cli.Flag{
-				cli.StringFlag{
-					Name:        "model, m",
-					Usage:       "Model name that you want execute",
-					Destination: &modelName,
-				},
-			},
-			Action: func(c *cli.Context) error {
-				if len(modelName) == 0 {
-					performAll()
-				} else {
-					performOne(modelName)
-				}
-
-				return nil
-			},
-		},
-	}
-
-	app.Run(os.Args)
-}
 
 func performAll() {
 	for _, modelConfig := range config.Models {

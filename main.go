@@ -26,9 +26,9 @@ func performAll() {
 	}
 }
 
-func performOne(modelName string) {
+func performOne(request string) {
 	viper.SetConfigType("yaml")
-	err := viper.ReadInConfig(bytes.NewBuffer([]byte(request)))
+	err := viper.ReadConfig(bytes.NewBuffer([]byte(request)))
 	if err != nil {
 		logger.Error("Load gobackup config faild", err)
 		return

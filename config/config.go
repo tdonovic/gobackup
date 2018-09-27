@@ -2,11 +2,9 @@ package config
 
 import (
 	"fmt"
-	"os"
 	"path"
 	"time"
 
-	"github.com/huacnlee/gobackup/logger"
 	"github.com/spf13/viper"
 )
 
@@ -46,43 +44,29 @@ type SubConfig struct {
 // - ./gobackup.yml
 // - ~/.gobackup/gobackup.yml
 // - /etc/gobackup/gobackup.yml
-func init() {
-	viper.SetConfigType("yaml")
+// func init(request string) {
+// 	viper.SetConfigType("yaml")
+// 	err := viper.ReadInConfig(bytes.NewBuffer([]byte(request)))
+// 	if err != nil {
+// 		logger.Error("Load gobackup config faild", err)
+// 		return
+// 	}
 
-	IsTest = os.Getenv("GO_ENV") == "test"
-	HomeDir = os.Getenv("HOME")
-	TempPath = path.Join(os.TempDir(), "gobackup")
+// 	Exist = true
+// 	Models = []ModelConfig{}
+// 	for key := range viper.GetStringMap("models") {
+// 		Models = append(Models, loadModel(key))
+// 	}
 
-	if IsTest {
-		viper.SetConfigName("gobackup_test")
-		HomeDir = "../"
-	} else {
-		viper.SetConfigName("gobackup")
-	}
+// 	return
+// }
 
-	// ./gobackup.yml
-	viper.AddConfigPath(".")
-	if IsTest {
-		viper.AddConfigPath("../")
-	} else {
-		// ~/.gobackup/gobackup.yml
-		viper.AddConfigPath("$HOME/.gobackup") // call multiple times to add many search paths
-		// /etc/gobackup/gobackup.yml
-		viper.AddConfigPath("/etc/gobackup/") // path to look for the config file in
-	}
-	err := viper.ReadInConfig()
-	if err != nil {
-		logger.Error("Load gobackup config faild", err)
-		return
-	}
-
+func Start() {
 	Exist = true
 	Models = []ModelConfig{}
 	for key := range viper.GetStringMap("models") {
 		Models = append(Models, loadModel(key))
 	}
-
-	return
 }
 
 func loadModel(key string) (model ModelConfig) {

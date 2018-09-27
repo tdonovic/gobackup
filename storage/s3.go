@@ -2,14 +2,15 @@ package storage
 
 import (
 	"fmt"
+	"os"
+	"path"
+	"time"
+
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/huacnlee/gobackup/logger"
-	"os"
-	"path"
 )
 
 // S3 - Amazon S3 storage
@@ -30,17 +31,17 @@ type S3 struct {
 }
 
 func (ctx *S3) open() (err error) {
-	ctx.viper.SetDefault("region", "us-east-1")
+	ctx.viper.SetDefault("region", "ap-southeast-1")
 	cfg := aws.NewConfig()
 	endpoint := ctx.viper.GetString("endpoint")
 	if len(endpoint) > 0 {
 		cfg.Endpoint = aws.String(endpoint)
 	}
-	cfg.Credentials = credentials.NewStaticCredentials(
-		ctx.viper.GetString("access_key_id"),
-		ctx.viper.GetString("secret_access_key"),
-		ctx.viper.GetString("token"),
-	)
+	// cfg.Credentials = credentials.NewStaticCredentials(
+	// 	ctx.viper.GetString("access_key_id"),
+	// 	ctx.viper.GetString("secret_access_key"),
+	// 	ctx.viper.GetString("token"),
+	// )
 	cfg.Region = aws.String(ctx.viper.GetString("region"))
 	cfg.MaxRetries = aws.Int(ctx.viper.GetInt("max_retries"))
 
@@ -74,8 +75,16 @@ func (ctx *S3) upload(fileKey string) (err error) {
 	if err != nil {
 		return fmt.Errorf("failed to upload file, %v", err)
 	}
+	req, _ := svc.GetObjectRequest(&s3manager.GetObjectInput{
+		Bucket: aws.String(ctx.bucket),
+		Key:    aws.String(remotePath),
+	})
+	urlStr, err := req.Presign(15 * time.Minute)
+	if err != nil {
+		return fmt.Errorf("Could not generate presigned url, %v", err)
+	}
 
-	logger.Info("=>", result.Location)
+	logger.Info("=>", urlStr)
 	return nil
 }
 

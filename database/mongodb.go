@@ -46,6 +46,7 @@ func (ctx *MongoDB) perform() (err error) {
 	ctx.password = viper.GetString("password")
 	ctx.oplog = viper.GetBool("oplog")
 	ctx.authdb = viper.GetString("authdb")
+	ctx.collection = vipe.GetString("collection")
 
 	err = ctx.dump()
 	if err != nil {
@@ -77,6 +78,9 @@ func (ctx *MongoDB) credentialOptions() string {
 	}
 	if len(ctx.authdb) > 0 {
 		opts = append(opts, "--authenticationDatabase="+ctx.authdb)
+	}
+	if len(ctx.collection) > 0{
+		opts = append(optsm "-c="+ctx.collection)
 	}
 	return strings.Join(opts, " ")
 }

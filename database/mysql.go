@@ -2,10 +2,12 @@ package database
 
 import (
 	"fmt"
-	"github.com/huacnlee/gobackup/helper"
-	"github.com/huacnlee/gobackup/logger"
+	"os"
 	"path"
 	"strings"
+
+	"github.com/huacnlee/gobackup/helper"
+	"github.com/huacnlee/gobackup/logger"
 )
 
 // MySQL database
@@ -30,7 +32,7 @@ type MySQL struct {
 func (ctx *MySQL) perform() (err error) {
 	viper := ctx.viper
 	viper.SetDefault("host", "127.0.0.1")
-	viper.SetDefault("username", "root")
+	viper.SetDefault(os.Getenv("mysql_user"), "mysql_pass")
 	viper.SetDefault("port", 3306)
 
 	ctx.host = viper.GetString("host")

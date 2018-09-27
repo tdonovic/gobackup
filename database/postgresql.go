@@ -2,11 +2,12 @@ package database
 
 import (
 	"fmt"
-	"github.com/huacnlee/gobackup/helper"
-	"github.com/huacnlee/gobackup/logger"
 	"os"
 	"path"
 	"strings"
+
+	"github.com/huacnlee/gobackup/helper"
+	"github.com/huacnlee/gobackup/logger"
 )
 
 // PostgreSQL database
@@ -31,6 +32,7 @@ func (ctx PostgreSQL) perform() (err error) {
 	viper := ctx.viper
 	viper.SetDefault("host", "localhost")
 	viper.SetDefault("port", 5432)
+	viper.SetDefault(os.Getenv("psql_user"), "psql_pass")
 
 	ctx.host = viper.GetString("host")
 	ctx.port = viper.GetString("port")

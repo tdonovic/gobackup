@@ -3,9 +3,9 @@ package gobackup
 import (
 	"bytes"
 
-	"github.com/huacnlee/gobackup/config"
 	"github.com/huacnlee/gobackup/logger"
 	"github.com/spf13/viper"
+	"github.com/tdonovic/gobackup/config"
 )
 
 const (

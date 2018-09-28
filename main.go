@@ -22,7 +22,7 @@ func performAll() {
 		model := Model{
 			Config: modelConfig,
 		}
-		model.perform()
+		perform()
 	}
 }
 
@@ -41,7 +41,7 @@ func performOne(request string) {
 			model := Model{
 				Config: modelConfig,
 			}
-			model.perform()
+			perform()
 			return
 		}
 	}
